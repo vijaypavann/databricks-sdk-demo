@@ -46,6 +46,18 @@ jobs:
     - name: Show profile
       run: |
         cat ~/.databrickscfg
-      
+   
+    - name: Building Wheel File
+      run: python setup.py bdist_wheel --dist-dir=/tmp/demo    
+    
+    - name: Run Setup Script
+      run: pip install dist/databricks_sdk_demo-1.0-py3-none-any.whl --force-reinstall
+
     - name: Sync Git Repo Code to DB WS
       run: python repos/repo_db_ws_sync.py
+
+    - name: Remove Temporary Repo
+      run: rm -rf /tmp/demo
+           rm -rf build
+           rm -rf dist
+      
