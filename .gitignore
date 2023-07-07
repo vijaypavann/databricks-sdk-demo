@@ -1,0 +1,10 @@
+# Python Virtual Env
+.pvenv
+
+# Eggs
+.eggs
+
+# build
+build
+*.egg-info
+dist
