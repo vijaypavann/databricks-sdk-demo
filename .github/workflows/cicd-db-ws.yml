@@ -1,4 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# This workflow will install Python dependencies, creates a Profile, builds a Wheel File and runs a Python program with a single version of Python [3.10]
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: Run Git Repo to Databricks Workspace Repos Sync on Push to main branch 
@@ -18,6 +18,7 @@ jobs:
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
       DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}
+      GIT_CHECKOUT_PATH:  ${{ secrets.GIT_CHECKOUT_PATH }}
 
     steps:
     - uses: actions/checkout@v3
@@ -32,8 +33,7 @@ jobs:
       run: python -c "import sys; print(sys.version)"
       
     - name: Print Env Hello
-      run: echo ${GITHUB_REF_NAME}  ${GITHUB_REF_TYPE}  ${GITHUB_SERVER_URL} ${GITHUB_REF#refs/heads/}
-           echo ${{ vars.GIT_CHECKOUT_PATH }}
+      run: echo ${GITHUB_REF_NAME}  ${GITHUB_REF_TYPE}  ${GITHUB_SERVER_URL} ${GITHUB_REF#refs/heads/} ${{ vars.GIT_CHECKOUT_PATH }}
 
     - name: Install dependencies
       run: |
@@ -41,30 +41,27 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         pip list
     
-    - name: Run Test Code
-      run: python test.py --git_path ${{ vars.GIT_CHECKOUT_PATH }} --db_host $DATABRICKS_HOST
-
-    # - name: Prepare profile
-    #   run: |
-    #     echo "[EE-DEMO]" >> ~/.databrickscfg
-    #     echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
-    #     echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
-
-    # - name: Show profile
-    #   run: |
-    #     cat ~/.databrickscfg
-   
-    # - name: Build Wheel File
-    #   run: python setup.py bdist_wheel --dist-dir=/tmp/demo    
     
-    # - name: Run Setup Script
-    #   run: pip install /tmp/demo/databricks_sdk_demo-1.0-py3-none-any.whl --force-reinstall
+    - name: Prepare profile
+      run: |
+        echo "[DEV]" >> ~/.databrickscfg
+        echo "host = $DATABRICKS_HOST" >> ~/.databrickscfg
+        echo "token = $DATABRICKS_TOKEN" >> ~/.databrickscfg
 
-    # - name: Sync Git Repo Code to DB WS
-    #   run: python repos/repo_db_ws_sync.py  
+    - name: Show profile
+      run: |
+        cat ~/.databrickscfg
+   
+    - name: Build Wheel File
+      run: python setup.py bdist_wheel --dist-dir=/tmp/demo    
+    
+    - name: Run Setup Script
+      run: pip install /tmp/demo/databricks_sdk_demo-1.0-py3-none-any.whl --force-reinstall
 
-    # - name: Remove Temporary Repo
-    #   run: rm -rf /tmp/demo
-    #        rm -rf build
-    #        rm -rf dist
-      
+    - name: Sync Git Repo Code to DB WS
+      run: python repos/repo_db_ws_sync.py  --git_checkout_path ${GIT_CHECKOUT_PATH} --branch_name ${GITHUB_REF#refs/heads/}
+
+    - name: Remove Temporary Repo
+      run: rm -rf /tmp/demo
+           rm -rf build
+           rm -rf dist
