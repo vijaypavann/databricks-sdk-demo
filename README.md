@@ -38,18 +38,19 @@ Databricks SDK for Python : Usages and Examples
 
 >### Run Repos Code (repos/repo_db_ws_sync.py) as part of CI / CD process
       
-      Set these Env variables as shown here:
+      Set these Secret variables as shown here:
 
 ![Env Variable](./assets/github_settings_secrets.png)
 
       `DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}`
       `DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_TOKEN }}`
+      `GIT_CHECKOUT_PATH:  ${{ secrets.GIT_CHECKOUT_PATH }}`
 
 >### Run Repos Examples
-   1. Go to `repos` dir, open `repo_db_ws_sync.py` and `Run as Python file`.
+   1. Go to `repos` dir, open `repo_db_ws_sync.py` and `Run as Python file` with `--git_checkout_path` and `--branch_name` arguments.
 
            OR
 
-   1. [On Terminal] python `repos/repo_db_ws_sync.py` 
+   1. [On Terminal] python `repos/repo_db_ws_sync.py --git_checkout_path ${GIT_CHECKOUT_PATH} --branch_name main` 
 
  
