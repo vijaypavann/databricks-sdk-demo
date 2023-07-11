@@ -25,7 +25,7 @@ def create_or_update_repo(git_checkout_path: str, git_remote_branch: str):
         repoInfo = ws.repos.create(url = GIT_URL, provider = GIT_PROVIDER, path = git_checkout_path)
         print(repoInfo)
         # Ex: RepoInfo(branch='main', head_commit_id='b3e3c827a755aa235f0c884b99d37af220139364', id=2668333326914369, path='/Repos/<USERNAME>@<ORG>.com/<DIR>', provider='gitHub', sparse_checkout=None, url='https://github.com/vijaypavann/databricks-sdk-demo.git')
-    else:
+    else: 
         print("Updating an existing Repo in DB Workspace....")
         repoId = None
 
